@@ -1,6 +1,6 @@
 const express = require("express");
 const { performActions } = require("../puppeteer");
-const { wsSend, setUpWebSocket, closeConnection } = require("../websocket");
+const { wsSend } = require("../websocket");
 
 const router = express.Router();
 
@@ -16,7 +16,6 @@ router.post("/", async (req, res) => {
   }
 
   try {
-
     const screenshot = await performActions(url, actionList);
 
     // Close the WebSocket
@@ -24,7 +23,7 @@ router.post("/", async (req, res) => {
 
     res.send({ screenshot });
   } catch (error) {
-    console.error("Error:", error);
+    wsSend(`Something went wrong: ${error}`);
     res.status(500).send({ error: error.message });
   }
 });
